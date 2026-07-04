@@ -1,0 +1,91 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    user: root
+    command:
+      sh -c "chown -R node:node /app/node_modules && su-exec node sh -c 'echo
+      Installing dependencies... && npm install --no-package-lock --no-audit
+      --no-fund --loglevel=error && ./node_modules/.bin/tsx watch src/index.ts'"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: mysql://app:app@db:3306/Internal CRM Helpdesk
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - 3000:3000
+    volumes:
+      - ./package.json:/app/package.json:ro
+      - app_node_modules:/app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          initial_sync: true
+        - action: sync+restart
+          path: ./tsconfig.json
+          target: /app/tsconfig.json
+        - action: rebuild
+          path: ./package.json
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: app
+      MYSQL_DATABASE: Internal CRM Helpdesk
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+    ports:
+      - 127.0.0.1:3307:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
+        - -u
+        - app
+        - --password=app
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  app-extension-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.app-extension-ui
+    user: root
+    command:
+      sh -c "chown -R node:node /app/node_modules && su-exec node sh -c 'echo
+      Installing dependencies... && npm install --no-package-lock --no-audit
+      --no-fund --loglevel=error && npm run dev:frontend'"
+    env_file:
+      - .env
+    environment:
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - 5173:5173
+    volumes:
+      - ./package.json:/app/package.json:ro
+      - app_extension_ui_node_modules:/app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend/app-extension-ui
+          target: /app/frontend/app-extension-ui
+          initial_sync: true
+          ignore:
+            - node_modules/
+            - dist/
+        - action: rebuild
+          path: ./package.json
+volumes:
+  app_node_modules: null
+  mysql_data: null
+  app_extension_ui_node_modules: null

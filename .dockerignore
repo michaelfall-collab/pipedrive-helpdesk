@@ -1,0 +1,6 @@
+.git
+node_modules
+dist
+.env
+frontend/app-extension-ui/dist
+frontend/app-extension-ui/node_modules
