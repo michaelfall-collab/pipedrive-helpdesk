@@ -19,7 +19,7 @@ export function createAuthRedirect(): string {
 
 const router = Router();
 
-router.get('/callback', async (req, res, next) => {
+router.get('/oauth/callback', async (req, res, next) => {
   const { code, state } = req.query as { code?: string; state?: string };
 
 //if (!state || !verifyState(state)) {
@@ -53,7 +53,7 @@ router.get('/callback', async (req, res, next) => {
       data: { id: number; company_id: number };
     };
 
-    await upsertToken(data.company_id, data.id, token);
+//  await upsertToken(data.company_id, data.id, token);
     res.redirect('/');
   } catch (err) {
     next(err);
