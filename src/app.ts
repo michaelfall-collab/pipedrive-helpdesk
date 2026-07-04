@@ -10,8 +10,23 @@ import modalRouter from './app-extensions/modal/index.js';
 const app = express();
 
 app.get('/', (req, res) => {
-  // Completely bypassed database queries so the server stays live
   res.send("CRM Helpdesk Backend is live and running with zero database dependencies!");
+});
+
+// ADD THIS NEW ROUTE HERE:
+app.get('/login', (req, res) => {
+  const clientId = process.env.PIPEDRIVE_CLIENT_ID;
+  const redirectUri = process.env.PIPEDRIVE_REDIRECT_URI;
+  
+  if (!clientId || !redirectUri) {
+    return res.status(500).send("Error: Missing PIPEDRIVE_CLIENT_ID or PIPEDRIVE_REDIRECT_URI in Render Environment Variables.");
+  }
+
+  // Programmatically compiles the official Pipedrive initialization URL
+  const pipedriveAuthUrl = `https://oauth.pipedrive.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  
+  // Bounces your browser directly to Pipedrive's permission screen
+  res.redirect(pipedriveAuthUrl);
 });
 
 const appExtensionAssetsPath = join(
