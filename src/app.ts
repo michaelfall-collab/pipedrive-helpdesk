@@ -2,11 +2,6 @@ import express, { NextFunction, Request, Response } from 'express';
 import { join } from 'node:path';
 import * as v2 from 'pipedrive/v2';
 import modalRouter from './app-extensions/modal/index.js';
-import oauthRouter, { createAuthRedirect } from './oauth/index.js';
-import { getClient } from './pipedrive/client.js';
-import { db } from './database/index.js';
-import { pipedriveTokens } from './database/schema.js';
-import { desc } from 'drizzle-orm';
 
 const app = express();
 
@@ -17,10 +12,6 @@ function createOauth2() {
     redirectUri: process.env.PIPEDRIVE_REDIRECT_URI ?? '',
   });
 }
-
-app.get('/', (req, res) => {
-  res.send("CRM Helpdesk Backend is live and running with zero database dependencies!");
-});
 
 // 1. Static Root Confirmation Route
 app.get('/', (req, res) => {
@@ -70,7 +61,6 @@ app.get('/oauth/callback', async (req, res, next) => {
     }
 
     console.log("OAuth Connection Verified and Approved Successfully!");
-    // Redirects user cleanly back to the home route upon completion
     res.redirect('/');
   } catch (err) {
     next(err);
