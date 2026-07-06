@@ -8,7 +8,7 @@
     "build:frontend": "vite build --config frontend/app-extension-ui/vite.config.ts",
     "preview:frontend": "vite preview --config frontend/app-extension-ui/vite.config.ts",
     "build": "tsc && vite build --config frontend/app-extension-ui/vite.config.ts",
-    "start": "node --env-file-if-exists=.env dist/index.js"
+    "start": "node --env-file-if-exists=.env dist/index.js",
     "typecheck": "tsc --noEmit && tsc --noEmit -p frontend/app-extension-ui/tsconfig.json",
     "db:migrate": "drizzle-kit migrate"
   },
