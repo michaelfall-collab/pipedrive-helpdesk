@@ -9,9 +9,9 @@ if (!rootElement) throw new Error('Root element not found');
 
 createRoot(rootElement).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/extensions">
       <Routes>
-        <Route path="/extensions/modal" element={<Modal />} />
+        <Route path="/modal" element={<Modal />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
