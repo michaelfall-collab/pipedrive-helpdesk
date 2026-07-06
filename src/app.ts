@@ -7,7 +7,6 @@ import { getClient } from './pipedrive/client.js';
 import { db } from './database/index.js';
 import { pipedriveTokens } from './database/schema.js';
 import { desc } from 'drizzle-orm';
-import modalRouter from './app-extensions/modal/index.js';
 
 const app = express();
 
